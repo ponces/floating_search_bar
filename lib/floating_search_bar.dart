@@ -17,6 +17,8 @@ class FloatingSearchBar extends StatelessWidget {
     this.onTap,
     this.padding = EdgeInsets.zero,
     this.pinned = false,
+    this.scrollController,
+    this.itemExtent = null,
     @required List<Widget> children,
   }) : _childDelagate = SliverChildListDelegate(
           children,
@@ -35,6 +37,8 @@ class FloatingSearchBar extends StatelessWidget {
     this.decoration,
     this.padding = EdgeInsets.zero,
     this.pinned = false,
+    this.scrollController,
+    this.itemExtent = null,
     @required IndexedWidgetBuilder itemBuilder,
     @required int itemCount,
   }) : _childDelagate = SliverChildBuilderDelegate(
@@ -60,6 +64,10 @@ class FloatingSearchBar extends StatelessWidget {
   final bool pinned;
 
   final EdgeInsetsGeometry padding;
+
+  final ScrollController scrollController;
+
+  final double itemExtent;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +99,12 @@ class FloatingSearchBar extends StatelessWidget {
             ),
           ];
         },
-        body: ListView.custom(childrenDelegate: _childDelagate),
+        body: ListView.custom(
+          childrenDelegate: _childDelagate,
+          padding: EdgeInsets.zero,
+          controller: scrollController,
+          itemExtent: itemExtent,
+        ),
       ),
     );
   }

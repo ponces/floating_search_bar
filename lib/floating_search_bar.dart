@@ -16,7 +16,6 @@ class FloatingSearchBar extends StatelessWidget {
     this.decoration,
     this.onTap,
     this.padding = EdgeInsets.zero,
-    this.pinned = false,
     this.scrollController,
     this.itemExtent = null,
     @required List<Widget> children,
@@ -36,7 +35,6 @@ class FloatingSearchBar extends StatelessWidget {
     this.onTap,
     this.decoration,
     this.padding = EdgeInsets.zero,
-    this.pinned = false,
     this.scrollController,
     this.itemExtent = null,
     @required IndexedWidgetBuilder itemBuilder,
@@ -61,8 +59,6 @@ class FloatingSearchBar extends StatelessWidget {
   /// Override the search field
   final Widget title;
 
-  final bool pinned;
-
   final EdgeInsetsGeometry padding;
 
   final ScrollController scrollController;
@@ -74,38 +70,44 @@ class FloatingSearchBar extends StatelessWidget {
     return Scaffold(
       drawer: drawer,
       endDrawer: endDrawer,
-      body: NestedScrollView(
-        headerSliverBuilder: (context, enabled) {
-          return [
-            SliverPadding(
-              padding: padding,
-              sliver: SliverFloatingBar(
-                leading: leading,
-                floating: !pinned,
-                pinned: pinned,
-                title: title ??
-                    TextField(
-                      controller: controller,
-                      decoration: decoration ??
-                          InputDecoration.collapsed(
-                            hintText: "Search...",
-                          ),
-                      autofocus: false,
-                      onChanged: onChanged,
-                      onTap: onTap,
-                    ),
-                trailing: trailing,
-              ),
+      body: CustomScrollView(
+        controller: scrollController,
+        slivers: <Widget>[
+          SliverPadding(
+            padding: padding,
+            sliver: SliverFloatingBar(
+              leading: leading,
+              floating: true,
+              title: title ??
+                  TextField(
+                    controller: controller,
+                    decoration: decoration ??
+                        InputDecoration.collapsed(
+                          hintText: "Search...",
+                        ),
+                    autofocus: false,
+                    onChanged: onChanged,
+                    onTap: onTap,
+                  ),
+              trailing: trailing,
             ),
-          ];
-        },
-        body: ListView.custom(
-          childrenDelegate: _childDelagate,
-          padding: EdgeInsets.zero,
-          controller: scrollController,
-          itemExtent: itemExtent,
-        ),
+          ),
+          _getSliverList(),
+        ],
       ),
     );
+  }
+
+  Widget _getSliverList() {
+    if (itemExtent != null) {
+      return SliverFixedExtentList(
+        delegate: _childDelagate,
+        itemExtent: itemExtent,
+      );
+    } else {
+      return SliverList(
+        delegate: _childDelagate,
+      );
+    }
   }
 }

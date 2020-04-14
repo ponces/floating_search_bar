@@ -17,7 +17,8 @@ class FloatingSearchBar extends StatelessWidget {
     this.onTap,
     this.padding = EdgeInsets.zero,
     this.scrollController,
-    this.itemExtent = null,
+    this.itemExtent,
+    this.endPadding = EdgeInsets.zero,
     @required List<Widget> children,
   }) : _childDelagate = SliverChildListDelegate(
           children,
@@ -36,7 +37,8 @@ class FloatingSearchBar extends StatelessWidget {
     this.decoration,
     this.padding = EdgeInsets.zero,
     this.scrollController,
-    this.itemExtent = null,
+    this.itemExtent,
+    this.endPadding = EdgeInsets.zero,
     @required IndexedWidgetBuilder itemBuilder,
     @required int itemCount,
   }) : _childDelagate = SliverChildBuilderDelegate(
@@ -65,6 +67,8 @@ class FloatingSearchBar extends StatelessWidget {
 
   final double itemExtent;
 
+  final EdgeInsetsGeometry endPadding;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,6 +85,7 @@ class FloatingSearchBar extends StatelessWidget {
               title: title ??
                   TextField(
                     controller: controller,
+                    textInputAction: TextInputAction.search,
                     decoration: decoration ??
                         InputDecoration.collapsed(
                           hintText: "Search...",
@@ -93,6 +98,9 @@ class FloatingSearchBar extends StatelessWidget {
             ),
           ),
           _getSliverList(),
+          SliverPadding(
+            padding: endPadding,
+          ),
         ],
       ),
     );
